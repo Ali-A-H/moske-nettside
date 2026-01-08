@@ -358,3 +358,37 @@
     justify-content: space-between;
   }
 }
+.loadingText {
+  font-size: 14px;
+  opacity: 0.75;
+  padding: 6px 2px;
+}
+
+.errorText {
+  font-size: 14px;
+  color: #b91c1c;
+  padding: 6px 2px;
+}
+
+.heroMeta {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+}
+
+.heroMetaText {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.heroMetaSep {
+  opacity: 0.7;
+}
+
+.heroMetaFile {
+  opacity: 0.85;
+}

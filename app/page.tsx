@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,20 +9,48 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Clock, Info, MapPin, Phone, Mail, HeartHandshake } from "lucide-react";
 
-import styles from "./Home.module.css"; // <-- juster path hvis filen ligger et annet sted
+import styles from "./Home.module.css";
 
+/* ======================
+   Typer
+====================== */
+type PrayerTimes = {
+  Day?: number;
+  Fajr: string;
+  Sunrise: string;
+  Dhuhr: string;
+  Asr: string;
+  Maghrib: string;
+  Isha: string;
+};
+
+type PrayerFile = Record<string, PrayerTimes>;
+
+/* ======================
+   Utils
+====================== */
+
+// Lager samme nøkkel som JSON-en (UTC midnatt i ms)
+function utcMidnightMsKey(date: Date) {
+  return String(
+    Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+  );
+}
+
+// Henter riktig månedsfil automatisk
+function getMonthlyFile(date: Date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  return `/data/prayer-times-${y}-${m}.json`;
+}
+
+/* ======================
+   Static content
+====================== */
 const HERO_IMAGE = "/hero-image.jpg";
 
-const PRAYER_TIMES = [
-  { name: "Fajr", time: "06:12" },
-  { name: "Dhuhr", time: "12:27" },
-  { name: "Asr", time: "14:38" },
-  { name: "Maghrib", time: "16:06" },
-  { name: "Isha", time: "17:32" },
-];
-
 const QUICK_INFO = [
-  { label: "Adresse", value: "Gate 12, 0001 Oslo" },
+  { label: "Adresse", value: "Torggata 5, 1707 Sarpsborg" },
   { label: "Åpent", value: "Daglig 10:00–21:00" },
   { label: "Jumu'ah", value: "Fredag 13:00" },
 ];
@@ -32,48 +60,99 @@ const fadeUp = {
   show: { opacity: 1, y: 0 },
 };
 
+/* ======================
+   Component
+====================== */
 export default function MosqueHomeSections() {
+  const [todayTimes, setTodayTimes] = useState<PrayerTimes | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadTimes = async () => {
+      try {
+        const today = new Date();
+        const file = getMonthlyFile(today);
+        const key = utcMidnightMsKey(today);
+
+        const res = await fetch(file, { cache: "no-store" });
+        if (!res.ok) throw new Error("Kunne ikke laste bønnetider");
+
+        const data: PrayerFile = await res.json();
+        const times = data[key];
+
+        if (!times) {
+          throw new Error("Fant ikke bønnetider for i dag");
+        }
+
+        setTodayTimes(times);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Ukjent feil");
+      }
+    };
+
+    loadTimes();
+  }, []);
+
   return (
     <main className={styles.page}>
       {/* HERO */}
       <section className={styles.heroSection}>
         <div className={styles.heroWrap}>
-          <Image src={HERO_IMAGE} alt="Moské" fill priority className={styles.heroImage} />
-
-          {/* Overlay (ingen “forsvinning” under) */}
+          <Image
+            src={HERO_IMAGE}
+            alt="Moské"
+            fill
+            priority
+            className={styles.heroImage}
+          />
           <div className={styles.heroOverlay} />
 
           <div className={styles.heroContentLayer}>
             <div className={styles.heroContent}>
-              <motion.div initial="hidden" animate="show" variants={fadeUp} className={styles.heroInner}>
+              <motion.div
+                initial="hidden"
+                animate="show"
+                variants={fadeUp}
+                className={styles.heroInner}
+              >
                 <div className={styles.heroPill}>
                   <Info className={styles.iconSm} />
                   <span>Velkommen</span>
                   <span className={styles.dot}>•</span>
-                  <span className={styles.pillMuted}>Et sted for bønn, ro og fellesskap</span>
+                  <span className={styles.pillMuted}>
+                    Et sted for bønn, ro og fellesskap
+                  </span>
                 </div>
 
-                <h1 className={styles.heroTitle}>Moskéens navn</h1>
+                <h1 className={styles.heroTitle}>Masjid Al-Ihsan</h1>
 
                 <p className={styles.heroLead}>
-                  Her finner du praktisk informasjon: bønnetider, åpningstider, kontakt og hvordan du kan bidra.
+                  Her finner du praktisk informasjon: bønnetider,
+                  åpningstider, kontakt og hvordan du kan bidra.
                 </p>
 
                 <div className={styles.heroActions}>
-                  <a href="#bonnetider" className={styles.fullOnMobile}>
-                    <Button className={styles.btnPrimary}>Se bønnetider</Button>
+                  <a href="#bonnetider">
+                    <Button className={styles.btnPrimary}>
+                      Se bønnetider
+                    </Button>
                   </a>
-
-                  <a href="#kontakt" className={styles.fullOnMobile}>
-                    <Button variant="secondary" className={styles.btnSecondaryOnHero}>
+                  <a href="#kontakt">
+                    <Button
+                      variant="secondary"
+                      className={styles.btnSecondaryOnHero}
+                    >
                       Kontakt oss
                     </Button>
                   </a>
 
                   <div className={styles.badgeRow}>
                     {QUICK_INFO.map((x) => (
-                      <Badge key={x.label} variant="secondary" className={styles.heroBadge}>
-                        <span className={styles.badgeLabel}>{x.label}:</span>&nbsp;{x.value}
+                      <Badge key={x.label} className={styles.heroBadge}>
+                        <span className={styles.badgeLabel}>
+                          {x.label}:
+                        </span>{" "}
+                        {x.value}
                       </Badge>
                     ))}
                   </div>
@@ -86,13 +165,8 @@ export default function MosqueHomeSections() {
 
       {/* INNHOLD */}
       <section className={styles.contentSection}>
-        <motion.div
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={fadeUp}
-          className={styles.grid3}
-        >
+        <div className={styles.grid3}>
+          {/* OM */}
           <Card className={styles.card}>
             <CardHeader>
               <CardTitle className={styles.cardTitle}>
@@ -101,58 +175,80 @@ export default function MosqueHomeSections() {
             </CardHeader>
             <CardContent className={styles.cardBody}>
               <p>
-                Skriv en kort introduksjon: hvem dere er, hva dere tilbyr, og hvilken rolle moskeen har i lokalsamfunnet.
+                Skriv en kort introduksjon: hvem dere er, hva dere
+                tilbyr, og hvilken rolle moskeen har i lokalsamfunnet.
               </p>
             </CardContent>
           </Card>
 
-          <Card id="bonnetider" className={`${styles.card} ${styles.scrollOffset}`}>
+          {/* BØNNETIDER */}
+          <Card id="bonnetider" className={styles.card}>
             <CardHeader>
               <CardTitle className={styles.cardTitle}>
                 <Clock className={styles.iconMd} /> Bønnetider (i dag)
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className={styles.prayerList}>
-                {PRAYER_TIMES.map((p) => (
-                  <div key={p.name} className={styles.prayerRow}>
-                    <span className={styles.prayerName}>{p.name}</span>
-                    <span className={styles.prayerTime}>{p.time}</span>
-                  </div>
-                ))}
-              </div>
+              {error && (
+                <p className={styles.errorText}>⚠️ {error}</p>
+              )}
+
+              {!error && !todayTimes && <p>Laster…</p>}
+
+              {todayTimes && (
+                <div className={styles.prayerList}>
+                  {[
+                    ["Fajr", todayTimes.Fajr],
+                    ["Soloppgang", todayTimes.Sunrise],
+                    ["Dhuhr", todayTimes.Dhuhr],
+                    ["Asr", todayTimes.Asr],
+                    ["Maghrib", todayTimes.Maghrib],
+                    ["Isha", todayTimes.Isha],
+                  ].map(([name, time]) => (
+                    <div key={name} className={styles.prayerRow}>
+                      <span className={styles.prayerName}>{name}</span>
+                      <span className={styles.prayerTime}>{time}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
 
-          <Card id="kontakt" className={`${styles.card} ${styles.scrollOffset}`}>
+          {/* KONTAKT */}
+          <Card id="kontakt" className={styles.card}>
             <CardHeader>
               <CardTitle className={styles.cardTitle}>
                 <MapPin className={styles.iconMd} /> Kontakt & besøk
               </CardTitle>
             </CardHeader>
             <CardContent className={styles.contactBody}>
-              <div className={styles.contactList}>
-                <div className={styles.contactItem}>
-                  <MapPin className={styles.iconSmMuted} />
-                  <div>
-                    <div className={styles.contactLabel}>Adresse</div>
-                    <div className={styles.contactValue}>GTorggata 5 1707 Sarpsborg</div>
+              <div className={styles.contactItem}>
+                <MapPin className={styles.iconSmMuted} />
+                <div>
+                  <div className={styles.contactLabel}>Adresse</div>
+                  <div className={styles.contactValue}>
+                    Torggata 5, 1707 Sarpsborg
                   </div>
                 </div>
+              </div>
 
-                <div className={styles.contactItem}>
-                  <Phone className={styles.iconSmMuted} />
-                  <div>
-                    <div className={styles.contactLabel}>Telefon</div>
-                    <div className={styles.contactValue}>+47 972 53 265</div>
+              <div className={styles.contactItem}>
+                <Phone className={styles.iconSmMuted} />
+                <div>
+                  <div className={styles.contactLabel}>Telefon</div>
+                  <div className={styles.contactValue}>
+                    +47 972 53 265
                   </div>
                 </div>
+              </div>
 
-                <div className={styles.contactItem}>
-                  <Mail className={styles.iconSmMuted} />
-                  <div>
-                    <div className={styles.contactLabel}>E-post</div>
-                    <div className={styles.contactValue}>Al-rawdah@gmail.com</div>
+              <div className={styles.contactItem}>
+                <Mail className={styles.iconSmMuted} />
+                <div>
+                  <div className={styles.contactLabel}>E-post</div>
+                  <div className={styles.contactValue}>
+                    al-rawdah@gmail.com
                   </div>
                 </div>
               </div>
@@ -161,49 +257,12 @@ export default function MosqueHomeSections() {
 
               <div className={styles.openingBox}>
                 <div className={styles.openingTitle}>Åpningstider</div>
-                <div className={styles.openingText}>Daglig 10:00–21:00</div>
-                <div className={styles.openingText}>Fredag: Jumuah kl. 13:00</div>
-              </div>
-
-              <Button variant="outline" className={styles.btnOutlineFull}>
-                Åpne kart
-              </Button>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        <motion.div
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={fadeUp}
-          className={styles.supportWrap}
-        >
-          <Card className={styles.card}>
-            <CardContent className={styles.supportInner}>
-              <div className={styles.supportRow}>
-                <div className={styles.supportText}>
-                  <div className={styles.supportPill}>
-                    <HeartHandshake className={styles.iconSmMuted} />
-                    <span>Støtt arbeidet</span>
-                  </div>
-
-                  <h2 className={styles.supportTitle}>Ønsker du å bidra?</h2>
-                  <p className={styles.supportDesc}>
-                    Legg inn Vipps-nummer/kontonummer, og en kort tekst om frivillighet.
-                  </p>
-                </div>
-
-                <div className={styles.supportActions}>
-                  <Button className={styles.btnPrimary}>Doner</Button>
-                  <Button variant="secondary" className={styles.btnSecondary}>
-                    Bli frivillig
-                  </Button>
-                </div>
+                <div>Daglig 10:00–21:00</div>
+                <div>Fredag: Jumuah kl. 13:00</div>
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       </section>
     </main>
   );
