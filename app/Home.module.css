@@ -1,0 +1,360 @@
+.page {
+  background: var(--background);
+}
+
+/* HERO */
+.heroSection {
+  position: relative;
+  padding-top: 3rem; /* flytt alt litt ned */
+}
+
+.heroWrap {
+  position: relative;
+  height: 80vh;
+  min-height: 600px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.heroImage {
+  object-fit: cover;
+}
+
+/* Overlay som IKKE “forsvinner” ned i hvitt */
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.60),
+    rgba(0, 0, 0, 0.25),
+    rgba(0, 0, 0, 0.0)
+  );
+}
+
+.heroContentLayer {
+  position: absolute;
+  inset: 0;
+}
+
+.heroContent {
+  margin: 0 auto;
+  height: 100%;
+  max-width: 72rem; /* ~ max-w-6xl */
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 6rem; /* dra tekst lengre ned */
+  display: flex;
+  align-items: flex-end;
+}
+
+.heroInner {
+  width: 100%;
+}
+
+.heroPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  color: rgba(255,255,255,0.95);
+  background: rgba(255,255,255,0.10);
+  backdrop-filter: blur(10px);
+}
+
+.dot {
+  color: rgba(255,255,255,0.65);
+}
+
+.pillMuted {
+  color: rgba(255,255,255,0.90);
+}
+
+.heroTitle {
+  margin-top: 1rem;
+  max-width: 48rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: white;
+  font-size: 2rem;
+  line-height: 1.15;
+}
+
+.heroLead {
+  margin-top: 0.75rem;
+  max-width: 42rem;
+  color: rgba(255,255,255,0.90);
+  font-size: 1rem;
+}
+
+.heroActions {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.badgeRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.heroBadge {
+  border-radius: 999px;
+  background: rgba(255,255,255,0.10) !important;
+  color: white !important;
+}
+
+.badgeLabel {
+  color: rgba(255,255,255,0.80);
+}
+
+/* Buttons */
+.btnPrimary {
+  border-radius: 1rem !important;
+  width: 100%;
+}
+
+.btnSecondaryOnHero {
+  border-radius: 1rem !important;
+  width: 100%;
+  background: rgba(255,255,255,0.15) !important;
+  color: white !important;
+}
+
+.btnSecondaryOnHero:hover {
+  background: rgba(255,255,255,0.20) !important;
+}
+
+.btnSecondary {
+  border-radius: 1rem !important;
+}
+
+.btnOutlineFull {
+  width: 100%;
+  border-radius: 1rem !important;
+}
+
+.fullOnMobile {
+  width: 100%;
+}
+
+/* CONTENT */
+.contentSection {
+  margin: 0 auto;
+  max-width: 72rem;
+  padding: 6rem 1rem; /* mer luft (py-24) */
+}
+
+.grid3 {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.card {
+  border-radius: 1.25rem !important;
+}
+
+.cardTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cardBody {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.scrollOffset {
+  scroll-margin-top: 6rem;
+}
+
+/* Prayer list */
+.prayerList {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.prayerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(0,0,0,0.08);
+  padding: 0.75rem 1rem;
+  background: rgba(255,255,255,0.6);
+}
+
+.prayerName {
+  font-weight: 500;
+}
+
+.prayerTime {
+  color: var(--muted-foreground);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Contact */
+.contactBody {
+  display: grid;
+  gap: 1rem;
+}
+
+.contactList {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.contactItem {
+  display: flex;
+  gap: 0.5rem;
+  color: var(--muted-foreground);
+}
+
+.contactLabel {
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 0.1rem;
+}
+
+.contactValue {
+  color: var(--muted-foreground);
+}
+
+.openingBox {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.openingTitle {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.openingText {
+  color: var(--muted-foreground);
+}
+
+/* Support section */
+.supportWrap {
+  margin-top: 2.5rem;
+}
+
+.supportInner {
+  padding: 1.5rem;
+}
+
+.supportRow {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.supportText {
+  max-width: 42rem;
+}
+
+.supportPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid rgba(0,0,0,0.10);
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+
+.supportTitle {
+  margin-top: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.supportDesc {
+  margin-top: 0.5rem;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.supportActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Icons */
+.iconSm {
+  width: 1rem;
+  height: 1rem;
+}
+
+.iconMd {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.iconSmMuted {
+  width: 1rem;
+  height: 1rem;
+  color: var(--muted-foreground);
+  margin-top: 0.125rem;
+}
+
+/* Responsive */
+@media (min-width: 640px) {
+  .heroContent {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .heroTitle {
+    font-size: 3rem;
+  }
+
+  .heroLead {
+    font-size: 1.125rem;
+  }
+
+  .heroActions {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .btnPrimary,
+  .btnSecondaryOnHero {
+    width: auto;
+  }
+
+  .fullOnMobile {
+    width: auto;
+  }
+
+  .supportInner {
+    padding: 2rem;
+  }
+
+  .supportActions {
+    flex-direction: row;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .supportRow {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}

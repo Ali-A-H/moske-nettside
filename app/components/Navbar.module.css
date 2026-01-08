@@ -1,0 +1,45 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Full bredde inni navbaren, med kontrollert padding */
+.inner {
+  width: 100%;
+  padding: 1rem 7rem;      /* 👈 juster disse for “mer venstre/høyre” */
+  display: flex;
+  align-items: center;
+}
+
+/* Logo til venstre */
+.logo {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #111;
+}
+
+/* Lenker helt til høyre */
+.navLinks {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+  margin-left: 70rem;       /* 👈 nøkkelen: skyver menyen til høyre */
+}
+
+
+.navLinks a {
+  text-decoration: none;
+  color: #111;
+  font-weight: 500;
+}
+
+.navLinks a:hover {
+  color: #2e7d32; /* diskret grønn (kan justeres) */
+}
